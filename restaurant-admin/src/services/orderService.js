@@ -61,4 +61,21 @@ export const orderService = {
       throw error;
     }
   },
+
+  // Clear all orders history (delete documents)
+  clearOrderHistory: async (orders, idToken) => {
+    try {
+      const deletePromises = orders.map((order) =>
+        firestoreApi.delete(`/orders/${order.id}?key=${apiKey}`, {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        })
+      );
+      await Promise.all(deletePromises);
+    } catch (error) {
+      console.error('Failed to clear order history:', error);
+      throw error;
+    }
+  },
 };

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useAdminAuth } from '../context/AdminAuthContext';
 import { useToast } from '../context/AdminToastContext';
 import { orderService } from '../services/orderService';
-import { ShoppingBag, ClipboardList, RefreshCw, Clock, CheckCircle } from 'lucide-react';
+import { ShoppingBag, ClipboardList, RefreshCw, Clock, CheckCircle, Trash2 } from 'lucide-react';
 import Button from '../components/Button';
 import SearchBar from '../components/SearchBar';
 import DataTable from '../components/DataTable';
 import Modal from '../components/Modal';
+import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 
 const OrderManagement = () => {
   const { token } = useAdminAuth();
@@ -21,6 +22,10 @@ const OrderManagement = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [updating, setUpdating] = useState(false);
+
+  // Clear history modal & state
+  const [isClearHistoryModalOpen, setIsClearHistoryModalOpen] = useState(false);
+  const [clearing, setClearing] = useState(false);
 
   const loadOrders = async (silent = false) => {
     if (!silent) setLoading(true);
@@ -72,6 +77,25 @@ const OrderManagement = () => {
       showToast('Failed to update status.', 'error');
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const handleClearHistory = async () => {
+    if (orders.length === 0) {
+      showToast('No order history to clear.', 'info');
+      setIsClearHistoryModalOpen(false);
+      return;
+    }
+    setClearing(true);
+    try {
+      await orderService.clearOrderHistory(orders, token);
+      showToast('Order history cleared successfully.', 'success');
+      setIsClearHistoryModalOpen(false);
+      loadOrders(false);
+    } catch (err) {
+      showToast('Failed to clear order history.', 'error');
+    } finally {
+      setClearing(false);
     }
   };
 
@@ -165,15 +189,26 @@ const OrderManagement = () => {
             Monitor and change status of customer meal delivery coordinates
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          icon={RefreshCw}
-          className="border-slate-800 hover:text-indigo-400 hover:border-indigo-500/30 text-slate-350"
-          onClick={() => loadOrders(false)}
-        >
-          Refresh Orders
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            icon={RefreshCw}
+            className="border-slate-800 hover:text-indigo-400 hover:border-indigo-500/30 text-slate-350"
+            onClick={() => loadOrders(false)}
+          >
+            Refresh Orders
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            icon={Trash2}
+            className="border-slate-800 hover:text-rose-450 hover:border-rose-500/30 text-slate-350"
+            onClick={() => setIsClearHistoryModalOpen(true)}
+          >
+            Clear History
+          </Button>
+        </div>
       </section>
 
       {/* Filter Options */}
@@ -252,6 +287,15 @@ const OrderManagement = () => {
           </div>
         </Modal>
       )}
+      {/* Clear History Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={isClearHistoryModalOpen}
+        onClose={() => setIsClearHistoryModalOpen(false)}
+        onConfirm={handleClearHistory}
+        title="Clear Order History"
+        message="Are you sure you want to clear all order history? This will permanently delete all order documents from Firestore."
+        loading={clearing}
+      />
     </div>
   );
 };
