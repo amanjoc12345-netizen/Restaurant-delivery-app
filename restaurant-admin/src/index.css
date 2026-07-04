@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+/* Optional custom base styles or variables can be placed here */
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #0f172a; /* Slate 900 */
+  color: #f8fafc; /* Slate 50 */
+}
