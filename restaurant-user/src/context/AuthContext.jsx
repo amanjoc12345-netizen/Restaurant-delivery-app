@@ -134,6 +134,10 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateUser = (updatedProfile) => {
+    setUser((prev) => (prev ? { ...prev, ...updatedProfile } : null));
+  };
+
   const value = {
     user,
     token,
@@ -142,6 +146,7 @@ export const AuthProvider = ({ children }) => {
     login,
     forgotPassword,
     logout,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

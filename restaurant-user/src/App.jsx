@@ -13,6 +13,11 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
+import CategoryRecipes from './pages/CategoryRecipes';
+import RecipeDetails from './pages/RecipeDetails';
+import Checkout from './pages/Checkout';
+import Orders from './pages/Orders';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -34,6 +39,52 @@ function App() {
                       element={
                         <ProtectedRoute>
                           <Dashboard />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    {/* New Protected Routes */}
+                    <Route
+                      path="/category/:id"
+                      element={
+                        <ProtectedRoute>
+                          <CategoryRecipes />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/recipe/:id"
+                      element={
+                        <ProtectedRoute>
+                          <RecipeDetails />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/checkout"
+                      element={
+                        <ProtectedRoute>
+                          <Checkout />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/orders"
+                      element={
+                        <ProtectedRoute>
+                          <Orders />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/profile"
+                      element={
+                        <ProtectedRoute>
+                          <Profile />
                         </ProtectedRoute>
                       }
                     />
