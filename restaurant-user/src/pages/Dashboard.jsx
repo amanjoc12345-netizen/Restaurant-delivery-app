@@ -128,6 +128,10 @@ const Dashboard = () => {
               <div key={idx} className="w-28 h-28 bg-slate-900 border border-slate-850 rounded-2xl animate-pulse flex-shrink-0" />
             ))}
           </div>
+                ) : categories.length === 0 ? (
+          <div className="py-6 text-center bg-slate-900/40 border border-slate-850 rounded-2xl p-6 max-w-sm">
+            <p className="text-xs text-slate-500 font-semibold">No categories available yet.</p>
+          </div>
         ) : (
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
             {categories.map((cat) => (
@@ -192,9 +196,13 @@ const Dashboard = () => {
           // Empty State
           <div className="flex flex-col items-center justify-center py-16 text-center bg-slate-900/40 border border-slate-850 rounded-2xl p-8 max-w-md mx-auto">
             <ShieldAlert size={36} className="text-slate-500 mb-3" />
-            <h4 className="font-semibold text-slate-350 text-base mb-1">No Dishes Found</h4>
+            <h4 className="font-semibold text-slate-355 text-base mb-1">
+              {searchQuery ? 'No Results Found' : 'No Recipes Available'}
+            </h4>
             <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
-              We couldn't find any recipes matching your query. Try typing another search or select a category above.
+              {searchQuery 
+                ? `We couldn't find any recipes matching "${searchQuery}".` 
+                : 'No recipes available.'}
             </p>
           </div>
         ) : (
