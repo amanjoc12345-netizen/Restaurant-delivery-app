@@ -1,46 +1,52 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AdminAuthProvider } from './context/AdminAuthContext';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import { ToastProvider } from './context/AdminToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminLayout from './components/AdminLayout';
 
 // Pages
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import CategoryManagement from './pages/CategoryManagement';
+import RecipeManagement from './pages/RecipeManagement';
+import OrderManagement from './pages/OrderManagement';
+import ProfileManagement from './pages/ProfileManagement';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
     <Router>
       <AdminAuthProvider>
-        <div className="flex flex-col min-h-screen bg-slate-950 text-slate-100 font-sans antialiased">
-          {/* Header Bar */}
-          <Navbar />
+        <ToastProvider>
+          <div className="flex flex-col min-h-screen bg-slate-950 text-slate-100 font-sans antialiased">
+            <main className="flex-1 flex flex-col">
+              <Routes>
+                {/* Security authentication login */}
+                <Route path="/login" element={<AdminLogin />} />
 
-          {/* Main Control Console Panel */}
-          <main className="flex-1 flex flex-col">
-            <Routes>
-              {/* Secured Dashboard routes */}
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Secured Dashboard routes */}
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <AdminLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="categories" element={<CategoryManagement />} />
+                  <Route path="recipes" element={<RecipeManagement />} />
+                  <Route path="orders" element={<OrderManagement />} />
+                  <Route path="profile" element={<ProfileManagement />} />
+                </Route>
 
-              {/* Security authentication login */}
-              <Route path="/login" element={<AdminLogin />} />
-
-              {/* Fallback routing */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
-
-          {/* Footer Bar */}
-          <Footer />
-        </div>
+                {/* Fallback routing */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+          </div>
+        </ToastProvider>
       </AdminAuthProvider>
     </Router>
   );
