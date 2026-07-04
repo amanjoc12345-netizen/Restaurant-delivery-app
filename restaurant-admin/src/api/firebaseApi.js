@@ -87,5 +87,14 @@ export const authServices = {
     });
     return response.data.users?.[0] || null;
   },
+
+  changePassword: async (idToken, newPassword) => {
+    const response = await authApi.post(`/accounts:update?key=${apiKey}`, {
+      idToken,
+      password: newPassword,
+      returnSecureToken: true,
+    });
+    return response.data;
+  },
 };
 
